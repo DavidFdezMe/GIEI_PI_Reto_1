@@ -1,3 +1,13 @@
+/*
+Actividad Realizada por:
+Oliver Martin Dostert Pérez
+David Fernández Mesa
+Ángel Ortega Lucena
+
+Para la asignatura de Procesadores integrados
+*/
+
+
 //Librerias
 #include <Servo.h>.
 
@@ -6,8 +16,13 @@
 #define echoPin 11
 #define servoPin 12
 
-#define LED 3
+//LEDs
+#define LED 3 
+#define GREEN_LED 8  //  LED verde
+#define YELLOW_LED 9  //  LED amarillo
+#define RED_LED 7  //  LED rojo
 
+//Botones
 Button boton1=Button(5);
 Button boton2=Button(4);
 Button boton3=Button(6);
@@ -49,6 +64,7 @@ void setup() {
 }
 }
 
+// Función para calcular la distancia usando el sensor ultrasónico
 int calcularDistancia(){ 
   digitalWrite(trigPin, LOW); 
   delayMicroseconds(2);
@@ -58,6 +74,23 @@ int calcularDistancia(){
   duracion = pulseIn(echoPin, HIGH);
   distancia= duracion*0.01723;
   return distancia;
+}
+
+// Función para manejar los LEDs según la distancia medida
+void LED() {
+  if (distancia > 60) {
+    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(YELLOW_LED, LOW);
+    digitalWrite(RED_LED, LOW);
+  } else if (distancia > 30 && distancia <= 60) {
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(YELLOW_LED, HIGH);
+    digitalWrite(RED_LED, LOW);
+  } else if (distancia <= 30) {
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(YELLOW_LED, LOW);
+    digitalWrite(RED_LED, HIGH);
+  }
 }
 
 //Funcion radar
@@ -70,6 +103,8 @@ void radar(){
     Serial.print("º | ");
     Serial.print(distancia);
     Serial.print(" cm");
+
+     LED(); //Llama a la función LED para que tome la variable de distancia desde aquí, ya que se trata de una variable local
   }
 
   for(int i=120;i>0;i--){  
@@ -85,4 +120,5 @@ void radar(){
 
 void loop() {
   botones(); 
+  radar();
 }
